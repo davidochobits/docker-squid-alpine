@@ -18,5 +18,5 @@ docker run  -v <configPath>/squid.conf:/etc/squid/squid.conf:ro \
             -v /var/log/squid:/var/log/squid:rw \
             -v /etc/localtime:/etc/localtime:ro \
             -p 3128:3128 \
-            chrisdaish/squid
+            davidochobits/squid
 ```
