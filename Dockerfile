@@ -1,4 +1,4 @@
-FROM alpine:3.17.1
+FROM arm32v7/alpine:3.17.1
 
 MAINTAINER davidochobits@protonmail.com
 
