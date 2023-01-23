@@ -12,10 +12,10 @@ services:
       - 3128:3128
     restart: always
     volumes:
-      - ./config/squid.conf:/etc/squid.conf
-      - ./cache:/var/cache/squid
-      - /var/log/squid:/var/log/squid
-      - /etc/localtime:/etc/localtime
+      - ./config/squid.conf:/etc/squid.conf:ro
+      - ./cache:/var/cache/squid:rw
+      - /var/log/squid:/var/log/squid:rw
+      - /etc/localtime:/etc/localtime:ro
 
 
 
