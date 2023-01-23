@@ -1,13 +1,13 @@
 Squid
 =====
 
-Slim image (18MB) of Squid 3.5.4 running under Alpine Linux 3.2.
+Slim image (18MB) of Squid 5.7-r0 running under Alpine Linux 3.17.1
 
 How to use
 =========
 
 ```
-docker run -p 3128:3128 chrisdaish/squid
+docker run -p 3128:3128 davidochobits/squid
 ```
 
 With bespoke configuration:
