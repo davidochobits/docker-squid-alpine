@@ -7,7 +7,7 @@ volumes:
 services:
 
   squid:
-    image: davidpenya77/squid:latest
+    image: davidpenya77/squid:32
     ports:
       - 3128:3128
     restart: always
