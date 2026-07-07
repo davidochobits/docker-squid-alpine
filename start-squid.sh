@@ -1,21 +1,21 @@
 #!/bin/sh
+set -eu
 
-set -e
+# Asegura que los directorios de trabajo existen y pertenecen a squid
+# (necesario cuando se montan volúmenes vacíos desde el host)
+mkdir -p /var/cache/squid /var/log/squid
+chown -R squid:squid /var/cache/squid /var/log/squid
 
-CHOWN=$(/usr/bin/which chown)
-SQUID=$(/usr/bin/which squid)
+# Inicializa los directorios de caché solo la primera vez.
+# Con -N se ejecuta en primer plano: cuando termina, la caché está lista
+if [ ! -d /var/cache/squid/00 ]; then
+    echo "Inicializando la caché de Squid..."
+    squid -z -N
+fi
 
-# Ensure permissions are set correctly on the Squid cache + log dir.
-"$CHOWN" -R squid:squid /var/cache/squid
-"$CHOWN" -R squid:squid /var/log/squid
-
-# Prepare the cache using Squid.
-echo "Initializing cache..."
-"$SQUID" -z
-
-# Give the Squid cache some time to rebuild.
-sleep 5
-
-# Launch squid
-echo "Starting Squid..."
-exec "$SQUID" -NYCd 1
+echo "Arrancando Squid..."
+# -N: primer plano (requisito para ser PID 1 en el contenedor)
+# -Y: respuestas rápidas UDP_HIT_OBJ mientras recarga
+# -C: no capturar señales fatales (deja que Docker las gestione)
+# -d 1: logs de depuración nivel 1 a stderr (visibles con `docker logs`)
+exec squid -NYCd 1 "$@"
