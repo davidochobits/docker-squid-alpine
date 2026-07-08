@@ -1,0 +1,20 @@
+Squid desplegado.
+
+Endpoint del proxy dentro del clúster:
+
+  {{ include "squid.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Para probarlo desde tu máquina:
+
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "squid.fullname" . }} 3128:{{ .Values.service.port }}
+  curl -x http://localhost:3128 http://example.com
+
+Ver logs de acceso:
+
+  kubectl -n {{ .Release.Namespace }} logs -l app.kubernetes.io/instance={{ .Release.Name }} -f
+
+{{- if not .Values.persistence.enabled }}
+
+NOTA: la caché es solo en memoria ({{ .Values.config.cacheMem }}). Para
+caché en disco persistente, instala con --set persistence.enabled=true
+{{- end }}

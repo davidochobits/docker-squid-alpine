@@ -1,0 +1,85 @@
+# Default values for squid.
+
+replicaCount: 1
+
+image:
+  repository: davidpenya77/squid
+  # Si se deja vacío, usa el appVersion del Chart.yaml (recomendado)
+  tag: ""
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 3128
+  # Para exponer el proxy fuera del clúster, usa NodePort o LoadBalancer:
+  # type: NodePort
+  # nodePort: 31280
+
+# --- Configuración de Squid -------------------------------------------------
+config:
+  # Redes con permiso para usar el proxy (se convierten en "acl localnet src").
+  # AJUSTA ESTO A TU ENTORNO. Por defecto, los rangos privados RFC 1918
+  # más el rango de pods típico de kubeadm.
+  allowedCidrs:
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+
+  # Memoria para la caché de objetos en RAM
+  cacheMem: 256 MB
+
+  # Líneas adicionales de squid.conf que se añaden al final del bloque generado
+  extra: ""
+  # extra: |
+  #   maximum_object_size 50 MB
+  #   dns_nameservers 10.96.0.10
+
+  # Si prefieres controlar el squid.conf entero, ponlo aquí y se ignora
+  # todo lo anterior:
+  override: ""
+  # override: |
+  #   http_port 3128
+  #   http_access allow all   # (no hagas esto en producción :)
+
+# --- Persistencia de la caché en disco --------------------------------------
+# Deshabilitada por defecto: la caché va solo en memoria, igual que la
+# imagen Docker. Actívala si quieres caché en disco que sobreviva reinicios.
+persistence:
+  enabled: false
+  # Tamaño de la caché de Squid en disco (MB) — debe caber en el PVC
+  cacheSizeMB: 1024
+  size: 2Gi
+  storageClass: ""
+  accessModes:
+    - ReadWriteOnce
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 128Mi
+  limits:
+    # Deja margen sobre config.cacheMem: Squid usa RAM adicional
+    # para índices y conexiones
+    memory: 512Mi
+
+livenessProbe:
+  tcpSocket:
+    port: proxy
+  initialDelaySeconds: 10
+  periodSeconds: 20
+
+readinessProbe:
+  tcpSocket:
+    port: proxy
+  initialDelaySeconds: 5
+  periodSeconds: 10
+
+podAnnotations: {}
+podLabels: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -1,0 +1,19 @@
+apiVersion: v2
+name: squid
+description: Squid proxy on Alpine Linux
+type: application
+# Versión del CHART: incrementa con cada cambio en el chart
+version: 0.1.0
+# Versión de la APP (Squid): debe coincidir con el tag de la imagen publicada
+appVersion: "6.12"
+home: https://github.com/davidochobits/docker-squid-alpine
+sources:
+  - https://github.com/davidochobits/docker-squid-alpine
+maintainers:
+  - name: davidochobits
+    email: davidochobits@protonmail.com
+keywords:
+  - squid
+  - proxy
+  - cache
+  - alpine
