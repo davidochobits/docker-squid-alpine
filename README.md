@@ -64,6 +64,15 @@ docker logs -f squid
 docker build -t squid .
 ```
 
+## Kubernetes (Helm)
+
+```bash
+helm install squid oci://ghcr.io/davidochobits/charts/squid \
+  --set config.allowedCidrs={10.0.0.0/8}
+```
+
+See [charts/squid/values.yaml](charts/squid/values.yaml) for all options.
+
 ## Credits
 
 Originally forked from an unlicensed, now unmaintained repository. This
